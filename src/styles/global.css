@@ -272,3 +272,172 @@ iframe {
   text-transform: uppercase;
   color: var(--accent);
 }
+
+/* ---- homepage ---- */
+
+.hero {
+  margin-bottom: 3.5rem;
+}
+
+.hero h1 {
+  font-size: 2rem;
+}
+
+.hero p {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  max-width: 52ch;
+}
+
+/* The three series are the editorial frame for everything else, so they sit
+   above the reverse-chronological content rather than below it. */
+.series-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.series-card {
+  background: var(--bg);
+  padding: 1rem 1.1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.series-card__name {
+  font-size: 0.95rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.series-card__name:hover {
+  color: var(--accent);
+}
+
+.series-card__blurb {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--muted);
+  flex: 1;
+}
+
+.series-card__latest {
+  margin: 0;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.8rem;
+  color: var(--faint);
+}
+
+.series-card__latest a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.series-card__latest a:hover {
+  color: var(--accent);
+}
+
+/* Asymmetric split: notes keep their voice at full width, the dated index of
+   links and video is compressed beside them. */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 2.5rem;
+}
+
+.rail h2 {
+  margin-top: 0;
+}
+
+/* One line per item, changelog style. Dense on purpose — this is the part
+   that would otherwise make the homepage endless. */
+.index {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.index li {
+  border-bottom: 1px solid var(--rule);
+}
+
+.index a {
+  display: grid;
+  grid-template-columns: 3.4rem 2.9rem minmax(0, 1fr);
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.55rem 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.index a:hover .index__label {
+  color: var(--accent);
+}
+
+.index__date,
+.index__kind {
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+.index__kind {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.index__label {
+  color: var(--muted);
+}
+
+.index__label[data-external]::after {
+  content: " ↗";
+  color: var(--faint);
+}
+
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.section-head h2 {
+  margin-bottom: 0.9rem;
+}
+
+.section-head a {
+  font-size: 0.82rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.section-head a:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .series-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3rem;
+  }
+}

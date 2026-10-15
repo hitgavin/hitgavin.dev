@@ -3,33 +3,91 @@ import { render } from "astro:content";
 
 import Base from "../layouts/Base.astro";
 import FormattedDate from "../components/FormattedDate.astro";
-import { SITE, SERIES } from "../consts";
-import { publishedPosts, publishedNotes, publishedLinks } from "../lib/content";
+import { SITE, SERIES, SERIES_IDS } from "../consts";
+import { publishedPosts, publishedNotes, pointerIndex } from "../lib/content";
 
-const posts = (await publishedPosts()).slice(0, 5);
-const links = (await publishedLinks()).slice(0, 4);
+const posts = await publishedPosts();
 
-// Notes carry no title, so the body has to be rendered to show anything at
-// all. Do it here rather than in the template — Astro will not await inside
-// a `.map()`.
+// Each series shows its own count and most recent piece, so the frame is not
+// just decoration — it tells you where the writing actually is.
+const series = SERIES_IDS.map((id) => {
+  const own = posts.filter((post) => post.data.series === id);
+  return { id, ...SERIES[id], count: own.length, latest: own[0] };
+});
+
+const latestPosts = posts.slice(0, 3);
+
+// Notes carry no title, so they have to be rendered to show anything at all.
 const notes = await Promise.all(
-  (await publishedNotes()).slice(0, 3).map(async (note) => ({
+  (await publishedNotes()).slice(0, 2).map(async (note) => ({
     ...note,
     Content: (await render(note)).Content,
   })),
 );
+
+const rows = await pointerIndex(8);
+
+// The lower section reads as "what I said" beside "what I'm pointing at".
+// With nothing to say yet, the pointers take the full width instead of
+// leaving a hole where the notes column would be.
+const splitStyle =
+  notes.length === 0 ? "grid-template-columns:minmax(0,1fr)" : undefined;
+
+const KIND_LABEL = { link: "link", video: "video" } as const;
+const shortDate = (date: Date) =>
+  date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    timeZone: "UTC",
+  });
 ---
 
 <Base>
-  <h1>{SITE.title}</h1>
-  <p class="lede">{SITE.tagline}</p>
+  <section class="hero">
+    <h1>{SITE.title}</h1>
+    <p>{SITE.tagline}</p>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2 style="margin-top:0">Three things I write about</h2>
+      <a href="/posts/">All posts →</a>
+    </div>
+    <div class="series-grid">
+      {
+        series.map((entry) => (
+          <article class="series-card">
+            <a class="series-card__name" href={`/series/${entry.id}/`}>
+              {entry.name}
+            </a>
+            <p class="series-card__blurb">{entry.blurb}</p>
+            <p class="series-card__latest">
+              {entry.latest ? (
+                <>
+                  {entry.count} {entry.count === 1 ? "post" : "posts"} · latest:{" "}
+                  <a href={`/posts/${entry.latest.id}/`}>
+                    {entry.latest.data.title}
+                  </a>
+                </>
+              ) : (
+                <>In progress — first post on the way.</>
+              )}
+            </p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
 
   {
-    posts.length > 0 && (
+    latestPosts.length > 0 && (
       <section>
-        <h2>Writing</h2>
+        <div class="section-head">
+          <h2>Latest writing</h2>
+          <a href="/posts/rss.xml">Long-form feed →</a>
+        </div>
         <ul class="feed">
-          {posts.map((post) => (
+          {latestPosts.map((post) => (
             <li>
               <a class="entry__title" href={`/posts/${post.id}/`}>
                 {post.data.title}
@@ -46,62 +104,59 @@ const notes = await Promise.all(
             </li>
           ))}
         </ul>
-        <p style="margin-top:1.5rem">
-          <a href="/posts/">All posts →</a>
-        </p>
       </section>
     )
   }
 
-  {
-    notes.length > 0 && (
-      <section>
-        <h2>Notes</h2>
-        <ul class="feed">
-          {notes.map(({ Content, data }) => (
-            <li>
-              <div class="note-body">
-                <Content />
-              </div>
-              <div class="tagrow" style="margin-top:.5rem">
-                <FormattedDate date={data.pubDate} />
-              </div>
-            </li>
-          ))}
-        </ul>
-        <p style="margin-top:1.5rem">
-          <a href="/notes/">All notes →</a>
-        </p>
-      </section>
-    )
-  }
+  <section class="split" style={splitStyle}>
+    {
+      notes.length > 0 && (
+        <div>
+          <div class="section-head">
+            <h2>Notes</h2>
+            <a href="/notes/">All →</a>
+          </div>
+          <ul class="feed">
+            {notes.map(({ Content, data }) => (
+              <li>
+                <div class="note-body">
+                  <Content />
+                </div>
+                <div class="tagrow" style="margin-top:.6rem">
+                  <FormattedDate date={data.pubDate} />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
 
-  {
-    links.length > 0 && (
-      <section>
-        <h2>Links</h2>
-        <ul class="feed">
-          {links.map((link) => (
-            <li>
-              <a class="entry__title" href={link.data.url}>
-                {link.data.title}
-              </a>
-              <div class="tagrow">
-                <FormattedDate date={link.data.pubDate} />
-                {link.data.source && (
-                  <>
-                    <span>·</span>
-                    <span>{link.data.source}</span>
-                  </>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-        <p style="margin-top:1.5rem">
-          <a href="/links/">All links →</a>
-        </p>
-      </section>
-    )
-  }
+    {
+      rows.length > 0 && (
+        <div class="rail">
+          <div class="section-head">
+            <h2>Links &amp; video</h2>
+            <a href="/rss.xml">Feed →</a>
+          </div>
+          <ul class="index">
+            {rows.map((row) => (
+              <li>
+                <a href={row.href}>
+                  <span class="index__date">{shortDate(row.date)}</span>
+                  <span class="index__kind">{KIND_LABEL[row.kind]}</span>
+                  <span class="index__label" data-external={row.external || undefined}>
+                    {row.label}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p class="meta" style="margin-top:1rem">
+            <a href="/links/">Links</a> · <a href="/videos/">Videos</a>
+          </p>
+        </div>
+      )
+    }
+  </section>
 </Base>
