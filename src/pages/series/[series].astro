@@ -1,0 +1,47 @@
+---
+import type { GetStaticPaths } from "astro";
+
+import Base from "../../layouts/Base.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import { SERIES, SERIES_IDS, type SeriesId } from "../../consts";
+import { publishedPosts } from "../../lib/content";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await publishedPosts();
+  return SERIES_IDS.map((id) => ({
+    params: { series: id },
+    props: { id, posts: posts.filter((post) => post.data.series === id) },
+  }));
+};
+
+const { id, posts } = Astro.props as {
+  id: SeriesId;
+  posts: Awaited<ReturnType<typeof publishedPosts>>;
+};
+const series = SERIES[id];
+---
+
+<Base title={series.name} description={series.blurb}>
+  <h1>{series.name}</h1>
+  <p class="lede">{series.blurb}</p>
+
+  <ul class="feed">
+    {
+      posts.map((post) => (
+        <li>
+          <a class="entry__title" href={`/posts/${post.id}/`}>
+            {post.data.title}
+          </a>
+          <p class="entry__desc">{post.data.description}</p>
+          <div class="tagrow">
+            <FormattedDate date={post.data.pubDate} />
+            {post.data.draft && <span class="draft-flag">draft</span>}
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+
+  <hr />
+  <p class="meta"><a href="/posts/">All series →</a></p>
+</Base>

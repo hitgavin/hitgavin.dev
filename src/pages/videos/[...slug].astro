@@ -1,0 +1,43 @@
+---
+import type { GetStaticPaths } from "astro";
+import { render } from "astro:content";
+
+import Base from "../../layouts/Base.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import VideoEmbed from "../../components/VideoEmbed.astro";
+import { publishedVideos } from "../../lib/content";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const videos = await publishedVideos();
+  return videos.map((video) => ({
+    params: { slug: video.id },
+    props: { video },
+  }));
+};
+
+const { video } = Astro.props;
+const { Content } = await render(video);
+---
+
+<Base
+  title={video.data.title}
+  description={video.data.description}
+  ogType="article"
+>
+  <h1>{video.data.title}</h1>
+  <div class="tagrow" style="margin-bottom:1rem">
+    <FormattedDate date={video.data.pubDate} />
+    <span>·</span>
+    <span>{video.data.platform}</span>
+  </div>
+
+  <VideoEmbed
+    platform={video.data.platform}
+    videoId={video.data.videoId}
+    title={video.data.title}
+  />
+
+  <div class="article__body">
+    <Content />
+  </div>
+</Base>

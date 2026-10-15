@@ -1,0 +1,46 @@
+---
+import { render } from "astro:content";
+
+import Base from "../../layouts/Base.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import { publishedNotes } from "../../lib/content";
+
+const notes = await Promise.all(
+  (await publishedNotes()).map(async (note) => ({
+    ...note,
+    Content: (await render(note)).Content,
+  })),
+);
+---
+
+<Base
+  title="Notes"
+  description="Short observations — a paragraph or two, published as they happen."
+>
+  <h1>Notes</h1>
+  <p class="lede">
+    Short observations. A paragraph or two, published as they happen, with none
+    of the ceremony of a post.
+  </p>
+
+  <ul class="feed">
+    {
+      notes.map(({ Content, data }) => (
+        <li>
+          <div class="note-body">
+            <Content />
+          </div>
+          <div class="tagrow" style="margin-top:.6rem">
+            <FormattedDate date={data.pubDate} />
+            {data.tags.length > 0 && (
+              <>
+                <span>·</span>
+                <span>{data.tags.join(", ")}</span>
+              </>
+            )}
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</Base>

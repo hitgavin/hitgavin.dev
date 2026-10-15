@@ -1,0 +1,59 @@
+---
+import Base from "../layouts/Base.astro";
+import { SITE, SERIES, SERIES_IDS } from "../consts";
+---
+
+<Base
+  title="About"
+  description="Who writes this, what it covers, and the standard every post is held to."
+>
+  <h1>About</h1>
+
+  <p>
+    I am {SITE.author}, a control engineer working on humanoid robots in China.
+    This site is where I write about the part of that work that belongs to
+    everyone: the methods, the tooling, and what the industry looks like from
+    the inside.
+  </p>
+
+  <h2>What you will find here</h2>
+  <ul>
+    {
+      SERIES_IDS.map((id) => (
+        <li style="margin-bottom:.6rem">
+          <a href={`/series/${id}/`}>{SERIES[id].name}</a> — {SERIES[id].blurb}
+        </li>
+      ))
+    }
+  </ul>
+
+  <h2>The standard</h2>
+  <p>
+    The topics here are wide — supply chains, agent tooling, control theory.
+    What holds them together is not the subject but the method, and it is worth
+    stating plainly so you can hold me to it:
+  </p>
+  <blockquote>
+    Primary sources. Real numbers. And an explicit statement of where the
+    uncertainty is.
+  </blockquote>
+  <p>
+    That last one matters most. When a figure comes from a public catalogue
+    rather than something I measured, I will say so. When I am extrapolating, I
+    will say that too. A reader who cannot tell the difference between what I
+    know and what I am guessing has no reason to trust either.
+  </p>
+  <p>
+    Nothing here comes from my employer. Where a post touches my day job, the
+    method is mine and the data is from simulation, public URDFs, published
+    specifications, or hardware I bought myself.
+  </p>
+
+  <h2>Elsewhere</h2>
+  <p>
+    Email me at <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Everything
+    published here is also available as <a href="/rss.xml">a feed</a>, or <a
+      href="/posts/rss.xml">long-form only</a
+    > if the short posts are noise to you.
+  </p>
+</Base>

@@ -1,0 +1,36 @@
+---
+import Base from "../../layouts/Base.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import { publishedVideos } from "../../lib/content";
+
+const videos = await publishedVideos();
+---
+
+<Base
+  title="Videos"
+  description="Demos and walkthroughs. Hosted on the platforms; indexed here."
+>
+  <h1>Videos</h1>
+  <p class="lede">
+    Demos and walkthroughs. The files live on YouTube and Bilibili — this is
+    just the catalogue, with the written context the platforms have no room for.
+  </p>
+
+  <ul class="feed">
+    {
+      videos.map((video) => (
+        <li>
+          <a class="entry__title" href={`/videos/${video.id}/`}>
+            {video.data.title}
+          </a>
+          <p class="entry__desc">{video.data.description}</p>
+          <div class="tagrow">
+            <FormattedDate date={video.data.pubDate} />
+            <span>·</span>
+            <span>{video.data.platform}</span>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</Base>

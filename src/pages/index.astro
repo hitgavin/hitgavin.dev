@@ -1,0 +1,107 @@
+---
+import { render } from "astro:content";
+
+import Base from "../layouts/Base.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import { SITE, SERIES } from "../consts";
+import { publishedPosts, publishedNotes, publishedLinks } from "../lib/content";
+
+const posts = (await publishedPosts()).slice(0, 5);
+const links = (await publishedLinks()).slice(0, 4);
+
+// Notes carry no title, so the body has to be rendered to show anything at
+// all. Do it here rather than in the template — Astro will not await inside
+// a `.map()`.
+const notes = await Promise.all(
+  (await publishedNotes()).slice(0, 3).map(async (note) => ({
+    ...note,
+    Content: (await render(note)).Content,
+  })),
+);
+---
+
+<Base>
+  <h1>{SITE.title}</h1>
+  <p class="lede">{SITE.tagline}</p>
+
+  {
+    posts.length > 0 && (
+      <section>
+        <h2>Writing</h2>
+        <ul class="feed">
+          {posts.map((post) => (
+            <li>
+              <a class="entry__title" href={`/posts/${post.id}/`}>
+                {post.data.title}
+              </a>
+              <p class="entry__desc">{post.data.description}</p>
+              <div class="tagrow">
+                <FormattedDate date={post.data.pubDate} />
+                <span>·</span>
+                <a class="series-tag" href={`/series/${post.data.series}/`}>
+                  {SERIES[post.data.series].name}
+                </a>
+                {post.data.draft && <span class="draft-flag">draft</span>}
+              </div>
+            </li>
+          ))}
+        </ul>
+        <p style="margin-top:1.5rem">
+          <a href="/posts/">All posts →</a>
+        </p>
+      </section>
+    )
+  }
+
+  {
+    notes.length > 0 && (
+      <section>
+        <h2>Notes</h2>
+        <ul class="feed">
+          {notes.map(({ Content, data }) => (
+            <li>
+              <div class="note-body">
+                <Content />
+              </div>
+              <div class="tagrow" style="margin-top:.5rem">
+                <FormattedDate date={data.pubDate} />
+              </div>
+            </li>
+          ))}
+        </ul>
+        <p style="margin-top:1.5rem">
+          <a href="/notes/">All notes →</a>
+        </p>
+      </section>
+    )
+  }
+
+  {
+    links.length > 0 && (
+      <section>
+        <h2>Links</h2>
+        <ul class="feed">
+          {links.map((link) => (
+            <li>
+              <a class="entry__title" href={link.data.url}>
+                {link.data.title}
+              </a>
+              <div class="tagrow">
+                <FormattedDate date={link.data.pubDate} />
+                {link.data.source && (
+                  <>
+                    <span>·</span>
+                    <span>{link.data.source}</span>
+                  </>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+        <p style="margin-top:1.5rem">
+          <a href="/links/">All links →</a>
+        </p>
+      </section>
+    )
+  }
+</Base>

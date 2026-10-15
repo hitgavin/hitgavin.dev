@@ -1,0 +1,24 @@
+---
+interface Props {
+  platform: "youtube" | "bilibili";
+  videoId: string;
+  title: string;
+}
+const { platform, videoId, title } = Astro.props;
+
+// Both players are loaded lazily and without cookies where the platform
+// supports it, so an index page full of embeds stays cheap.
+const src =
+  platform === "youtube"
+    ? `https://www.youtube-nocookie.com/embed/${videoId}`
+    : `https://player.bilibili.com/player.html?bvid=${videoId}&autoplay=0`;
+---
+
+<div class="embed">
+  <iframe
+    src={src}
+    title={title}
+    loading="lazy"
+    allow="accelerometer; encrypted-media; picture-in-picture; fullscreen"
+    allowfullscreen></iframe>
+</div>
