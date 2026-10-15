@@ -33,6 +33,47 @@ nothing is published by accident.
 
 Drafts render in `pnpm dev` and are excluded from `pnpm build`.
 
+## The subscriber list is not in this repository
+
+This is worth being explicit about, because it is the thing people assume
+wrongly about static sites.
+
+The list lives inside **Buttondown**. This repo contains a plain HTML `<form>`
+that posts to their endpoint, and nothing else — no subscriber data in the
+source, none in `dist/`, none in any build artifact.
+
+That makes the guarantee structural rather than a setting you could forget:
+
+- **A deploy cannot clear the list**, because a deploy only replaces `dist/`,
+  and the list was never in it.
+- Rebuilding from scratch, force-pushing, deleting and recreating the
+  Cloudflare Pages project, or moving hosts entirely all leave it untouched.
+- The only way to lose subscribers is to delete the Buttondown account.
+
+The form needs no JavaScript, which is why the site still ships zero bytes of
+it.
+
+### What actually needs guarding
+
+Not deploys — **the provider relationship**. Two habits cover it:
+
+1. **Export the list to CSV every few months** and keep it with your backups.
+   Buttondown allows export at any time; a service that does not is a service
+   to avoid.
+2. **Keep sending from your own domain.** Subscribers are attached to your
+   address, not to Buttondown, so switching providers later is invisible to
+   them.
+
+### Configuration
+
+`NEWSLETTER.username` in `src/consts.ts` must match the Buttondown account
+exactly, or the form will 404 on submit. Set `enabled: false` to remove the
+form from every page at once.
+
+Buttondown can also mail each new post automatically from `/posts/rss.xml`,
+which keeps publishing to one `git push`. Point it at the long-form feed, not
+`/rss.xml`, or subscribers get link shares too.
+
 ## Series
 
 Three, defined in `src/consts.ts`. One post belongs to exactly one.

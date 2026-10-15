@@ -3,6 +3,7 @@ import { render } from "astro:content";
 
 import Base from "../layouts/Base.astro";
 import FormattedDate from "../components/FormattedDate.astro";
+import Subscribe from "../components/Subscribe.astro";
 import { SITE, SERIES, SERIES_IDS } from "../consts";
 import { publishedPosts, publishedNotes, pointerIndex } from "../lib/content";
 
@@ -159,4 +160,6 @@ const shortDate = (date: Date) =>
       )
     }
   </section>
+
+  <Subscribe />
 </Base>

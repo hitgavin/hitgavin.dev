@@ -1,5 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
+import Subscribe from "../components/Subscribe.astro";
 import { SITE, SERIES, SERIES_IDS } from "../consts";
 ---
 
@@ -49,11 +50,25 @@ import { SITE, SERIES, SERIES_IDS } from "../consts";
     specifications, or hardware I bought myself.
   </p>
 
-  <h2>Elsewhere</h2>
+  <h2>Get in touch</h2>
   <p>
-    Email me at <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Everything
-    published here is also available as <a href="/rss.xml">a feed</a>, or <a
-      href="/posts/rss.xml">long-form only</a
-    > if the short posts are noise to you.
+    Email is best: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. I read
+    everything, and I reply to anything that is not a pitch.
   </p>
+  <p>
+    I take a small amount of consulting work — usually joint-level control and
+    system identification, or helping teams outside China understand the
+    actuator supply chain here. If that is why you are reading, say so in the
+    first line and I will tell you quickly whether I can help.
+  </p>
+
+  <h2>Following along</h2>
+  <p>
+    Everything published here is available as <a href="/rss.xml">a feed</a>, or
+    <a href="/posts/rss.xml">long-form only</a> if the short posts are noise to
+    you. If you would rather have the essays by email, the form below does that
+    and nothing else.
+  </p>
+
+  <Subscribe variant="inline" />
 </Base>

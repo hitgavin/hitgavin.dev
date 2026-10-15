@@ -1,0 +1,48 @@
+---
+import { NEWSLETTER, SITE } from "../consts";
+
+interface Props {
+  /** `inline` drops the heading for use at the foot of an article. */
+  variant?: "block" | "inline";
+}
+const { variant = "block" } = Astro.props;
+---
+
+{
+  NEWSLETTER.enabled && (
+    <aside class="subscribe">
+      {variant === "block" && <h2 class="subscribe__title">Subscribe</h2>}
+      <p class="subscribe__copy">
+        New long-form posts by email. No short notes, no link shares, nothing
+        else — and one click to leave. You can also just take <a href="/rss.xml">the
+        feed</a>.
+      </p>
+
+      {/* Plain form post. No JavaScript, no tracking script, and the list
+          itself never touches this repository. */}
+      <form class="subscribe__form" action={NEWSLETTER.action} method="post">
+        <label class="subscribe__label" for="bd-email">
+          Email address
+        </label>
+        <input
+          id="bd-email"
+          class="subscribe__input"
+          type="email"
+          name="email"
+          autocomplete="email"
+          placeholder="you@example.com"
+          required
+        />
+        <input type="hidden" name="embed" value="1" />
+        <button class="subscribe__button" type="submit">
+          Subscribe
+        </button>
+      </form>
+
+      <p class="subscribe__fine">
+        Or reach me directly at{" "}
+        <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+      </p>
+    </aside>
+  )
+}

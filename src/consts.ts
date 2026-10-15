@@ -6,7 +6,24 @@ export const SITE = {
   // and specific.
   tagline: "Control engineer. Notes on how robotics actually gets built in China.",
   author: "Gavin Zhang",
-  email: "hi@gavinzhang.dev",
+  // Swap to hi@gavinzhang.dev once Cloudflare Email Routing is forwarding it
+  // here. One line, and old links keep working because the domain is yours.
+  email: "hitgavin@gmail.com",
+} as const;
+
+/**
+ * The subscriber list lives entirely inside Buttondown. Nothing about it is
+ * stored in this repository or in `dist/`, so a deploy cannot touch it — the
+ * site only ships a plain HTML form that posts to their endpoint.
+ *
+ * `username` must match the Buttondown account, or the form 404s on submit.
+ */
+export const NEWSLETTER = {
+  enabled: true,
+  username: "gavinzhang",
+  get action() {
+    return `https://buttondown.com/api/emails/embed-subscribe/${this.username}`;
+  },
 } as const;
 
 /**
