@@ -1,11 +1,11 @@
 export const SITE = {
   url: "https://hitgavin.dev",
-  title: "Gavin Zhang",
+  title: "hitgavin",
   // One line. This is the single most-read sentence on the site — it decides
   // whether a stranger from Hacker News stays. Rewrite it until it is true
   // and specific.
   tagline: "Control engineer. Notes on how robotics actually gets built in China.",
-  author: "Gavin Zhang",
+  author: "hitgavin",
   // Swap to hi@hitgavin.dev once Cloudflare Email Routing is forwarding it
   // here. One line, and old links keep working because the domain is yours.
   email: "hitgavin@gmail.com",
