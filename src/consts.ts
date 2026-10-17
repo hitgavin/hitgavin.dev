@@ -4,7 +4,12 @@ export const SITE = {
   // One line. This is the single most-read sentence on the site — it decides
   // whether a stranger from Hacker News stays. Rewrite it until it is true
   // and specific.
-  tagline: "Control engineer. Notes on how robotics actually gets built in China.",
+  // Doubles as the default meta description for every page that does not set
+  // its own, so it has to read well in a search result, not just on the
+  // homepage. Anchored on the person rather than on a beat: a beat has edges
+  // and a person does not, which is what keeps the off-topic posts on-topic.
+  tagline:
+    "Control engineer in Shenzhen. Humanoid robots and control theory, plus whatever else I can get real data on.",
   author: "hitgavin",
   // Swap to hi@hitgavin.dev once Cloudflare Email Routing is forwarding it
   // here. One line, and old links keep working because the domain is yours.
