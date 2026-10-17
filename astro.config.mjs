@@ -8,7 +8,7 @@ import rehypeKatex from "rehype-katex";
 
 export default defineConfig({
   // Keep in sync with SITE.url in src/consts.ts.
-  site: "https://gavinzhang.dev",
+  site: "https://hitgavin.dev",
   integrations: [mdx(), sitemap()],
   markdown: {
     // Astro 7 ships Sätteri as the default Markdown processor, and it has no

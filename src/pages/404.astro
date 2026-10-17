@@ -1,0 +1,22 @@
+---
+import Base from "../layouts/Base.astro";
+import { NAV } from "../consts";
+---
+
+<Base title="Not found" description="That page does not exist.">
+  <h1>Not found</h1>
+  <p class="lede">
+    Nothing lives at this address. It may have moved, or it may never have
+    existed — either way, the writing is all still here.
+  </p>
+
+  <ul>
+    {
+      NAV.map((item) => (
+        <li>
+          <a href={item.href}>{item.label}</a>
+        </li>
+      ))
+    }
+  </ul>
+</Base>

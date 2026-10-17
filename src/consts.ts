@@ -1,12 +1,12 @@
 export const SITE = {
-  url: "https://gavinzhang.dev",
+  url: "https://hitgavin.dev",
   title: "Gavin Zhang",
   // One line. This is the single most-read sentence on the site — it decides
   // whether a stranger from Hacker News stays. Rewrite it until it is true
   // and specific.
   tagline: "Control engineer. Notes on how robotics actually gets built in China.",
   author: "Gavin Zhang",
-  // Swap to hi@gavinzhang.dev once Cloudflare Email Routing is forwarding it
+  // Swap to hi@hitgavin.dev once Cloudflare Email Routing is forwarding it
   // here. One line, and old links keep working because the domain is yours.
   email: "hitgavin@gmail.com",
 } as const;
@@ -20,7 +20,7 @@ export const SITE = {
  */
 export const NEWSLETTER = {
   enabled: true,
-  username: "gavinzhang",
+  username: "hitgavin",
   get action() {
     return `https://buttondown.com/api/emails/embed-subscribe/${this.username}`;
   },

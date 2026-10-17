@@ -1,4 +1,4 @@
-# gavinzhang.dev
+# hitgavin.dev
 
 Personal site. Astro, static output, deployed on Cloudflare Pages.
 
@@ -92,14 +92,43 @@ change; edit `SERIES[id].name` and nothing breaks.
 
 ## Deploy
 
-Cloudflare Pages, connected to this repo.
+A Cloudflare **Worker** serving static assets, configured in `wrangler.jsonc`.
 
-| Setting                | Value          |
-| ---------------------- | -------------- |
-| Framework preset       | Astro          |
-| Build command          | `pnpm build`   |
-| Build output directory | `dist`         |
-| `NODE_VERSION`         | `22`           |
+```bash
+pnpm exec wrangler login   # first time only
+pnpm deploy                # astro build && wrangler deploy
+pnpm preview               # builds, then serves on the real runtime locally
+```
 
-Update `site` in `astro.config.mjs` and `SITE.url` in `src/consts.ts` together
-if the domain ever changes — the sitemap and both feeds read from them.
+### Why a Worker and not Pages
+
+Pages would do the same job today. But Cloudflare's newer capabilities —
+Durable Objects, Workers AI bindings, the Agents SDK — land on Workers, and
+Pages is no longer where the investment goes. Starting here costs nothing and
+avoids migrating a site that by then has traffic and inbound links.
+
+### Adding server routes later
+
+The site is fully static, so the Worker has no `main` entrypoint — it only
+serves `dist/`. To add a dynamic route (an agent endpoint, a form handler):
+
+1. `pnpm add @astrojs/cloudflare` and register the adapter in
+   `astro.config.mjs`. It needs `astro >= 7.4`, so bump Astro at the same time.
+2. In `wrangler.jsonc`, point `"main"` at the generated worker entry and add
+   `"binding": "ASSETS"` inside `assets`.
+3. Mark **only** the dynamic routes with `export const prerender = false`.
+
+Every other page keeps prerendering and keeps shipping zero JavaScript. That
+property is worth defending on purpose rather than losing by accident.
+
+### Domain
+
+`hitgavin.dev`, registered through Cloudflare Registrar. It appears in three
+places that must stay in agreement, because the sitemap and both feeds are
+generated from them:
+
+| File                | Field         |
+| ------------------- | ------------- |
+| `astro.config.mjs`  | `site`        |
+| `src/consts.ts`     | `SITE.url`    |
+| `wrangler.jsonc`    | `name`        |

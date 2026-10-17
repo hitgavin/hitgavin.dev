@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hitgavin-dev",
+  "compatibility_date": "2026-10-17",
+
+  // Assets-only Worker: no server code yet, so there is no `main` entrypoint.
+  // Cloudflare serves `dist/` straight from its edge, which is exactly what
+  // Pages would have done — but on the runtime that gets the new features.
+  //
+  // Adding a server route later (an /api/* endpoint for an agent, say) means
+  // installing @astrojs/cloudflare, which generates a worker entry; then add
+  // `"main"` here and `"binding": "ASSETS"` below. The static pages keep
+  // prerendering untouched.
+  "assets": {
+    "directory": "./dist",
+    // Astro emits a real 404.html; serve it instead of a bare edge error.
+    "not_found_handling": "404-page"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}
