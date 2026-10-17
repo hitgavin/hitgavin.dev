@@ -16,6 +16,8 @@ const videos = await publishedVideos();
     just the catalogue, with the written context the platforms have no room for.
   </p>
 
+  {videos.length === 0 && <p class="meta">Nothing here yet.</p>}
+
   <ul class="feed">
     {
       videos.map((video) => (
