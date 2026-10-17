@@ -96,9 +96,16 @@ A Cloudflare **Worker** serving static assets, configured in `wrangler.jsonc`.
 
 ```bash
 pnpm exec wrangler login   # first time only
-pnpm deploy                # astro build && wrangler deploy
+pnpm run deploy            # astro build && wrangler deploy
 pnpm preview               # builds, then serves on the real runtime locally
 ```
+
+`deploy` must be run as `pnpm run deploy` — plain `pnpm deploy` is a reserved
+pnpm command and fails before the script is reached.
+
+There is no `workers.dev` subdomain. `wrangler.jsonc` binds `hitgavin.dev`
+directly as a custom domain, so the only address the site ever answers on is
+the real one.
 
 ### Why a Worker and not Pages
 

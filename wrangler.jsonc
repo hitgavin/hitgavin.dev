@@ -3,6 +3,14 @@
   "name": "hitgavin-dev",
   "compatibility_date": "2026-10-17",
 
+  // The site is only ever reachable at its own domain. Declaring the route
+  // here rather than clicking it in the dashboard means the production
+  // hostname is reviewable in git, and a fresh clone deploys to the right
+  // place. Wrangler creates the DNS record and the certificate on first
+  // deploy, because the zone is already in this account.
+  "workers_dev": false,
+  "routes": [{ "pattern": "hitgavin.dev", "custom_domain": true }],
+
   // Assets-only Worker: no server code yet, so there is no `main` entrypoint.
   // Cloudflare serves `dist/` straight from its edge, which is exactly what
   // Pages would have done — but on the runtime that gets the new features.
